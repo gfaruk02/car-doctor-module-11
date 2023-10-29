@@ -1,12 +1,31 @@
-import login from "../../../assets/images/login/login.svg"
+import { Link } from "react-router-dom";
+import login from "../../assets/images/login/login.svg"
+import { useContext } from "react";
+import { AuthContext } from "../../Provider/AuthProvider";
 
-const Login = () => {
-    const handleLogin = e =>{
+   
+
+const SignUp = () => {
+    const {createUser} = useContext(AuthContext);
+    const handleSignup = e =>{
         e.preventDefault()
         const form = e.target;
+        const name = form.name.value
         const email = form.email.value
         const password = form.password.value
-        console.log(email, password);
+        console.log(name, email, password);
+
+        //user send firebase 
+        createUser(email, password)
+        .then(result =>{
+            const user = result.user;
+            console.log(user);
+            form.reset();
+        })
+        .catch(error=>{
+            console.error(error);
+        })
+
     }
     return (
         <div className="hero min-h-screen bg-base-200">
@@ -15,8 +34,14 @@ const Login = () => {
             <img src={login} alt="" />
           </div>
           <div className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
-            <form className="card-body" onSubmit={handleLogin}>
-            <h1 className="text-3xl text-center font-bold">Login now!</h1>
+            <form className="card-body" onSubmit={handleSignup}>
+            <h1 className="text-3xl text-center font-bold">Sign Up</h1>
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text">Name</span>
+                </label>
+                <input name="name" type="name" placeholder="name" className="input input-bordered" required />
+              </div>
               <div className="form-control">
                 <label className="label">
                   <span className="label-text">Email</span>
@@ -33,13 +58,16 @@ const Login = () => {
                 </label>
               </div>
               <div className="form-control mt-6">
-                <button className="btn btn-primary">Login</button>
+                <button className="btn btn-primary">Sign Up</button>
               </div>
             </form>
+            <div>
+              <p className="text-base pl-8 pb-5">Already have an account <Link className="text-orange-600 font-bold" to="/login">Login</Link> </p>
+            </div>
           </div>
         </div>
       </div>
     );
 };
 
-export default Login;
+export default SignUp;
